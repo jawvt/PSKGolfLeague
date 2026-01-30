@@ -318,6 +318,15 @@ html, body {
     transform: none;
 }
 
+.btn-primary.btn-success {
+    background-color: var(--success-color);
+}
+
+.btn-primary.btn-success:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+}
+
 .btn-secondary {
     background-color: var(--border-color);
     color: var(--text-color);
@@ -574,6 +583,65 @@ html, body {
 .status-complete {
     color: var(--success-color);
     font-weight: 600;
+}
+
+/* ========== SCORECARD TABLE ========== */
+.scorecard-wrapper {
+    overflow-x: auto;
+    margin-top: 1rem;
+}
+
+.scorecard-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--secondary-color);
+    font-size: 0.95rem;
+}
+
+.scorecard-table thead {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+}
+
+.scorecard-table th,
+.scorecard-table td {
+    padding: 0.75rem;
+    text-align: center;
+    border: 1px solid var(--border-color);
+}
+
+.scorecard-table th:first-child,
+.scorecard-table td:first-child {
+    text-align: left;
+}
+
+.scorecard-table tbody tr:hover {
+    background-color: var(--bg-light);
+}
+
+.scorecard-table .summary-row {
+    background-color: #f0f0f0;
+    font-weight: 600;
+    border-top: 2px solid var(--primary-color);
+}
+
+.scorecard-table .total-row {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    font-weight: bold;
+    border-top: 3px solid var(--primary-color);
+}
+
+/* ========== RESPONSIVE SCORECARD ========== */
+@media (max-width: 768px) {
+    .scorecard-table {
+        font-size: 0.85rem;
+    }
+
+    .scorecard-table th,
+    .scorecard-table td {
+        padding: 0.5rem;
+    }
 }
 
 /* ========== RESPONSIVE DESIGN ========== */
