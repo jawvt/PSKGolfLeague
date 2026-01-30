@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PSK Golf League</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- ========== LANDING PAGE ========== -->
+    <div id="landing-page" class="page">
+        <div class="landing-container">
+            <div class="landing-header">
+                <h1>PSK Golf League</h1>
+                <p class="subtitle">Compete. Track. Conquer.</p>
+            </div>
+            <div class="landing-content">
+                <p>Welcome to the PSK Golf League — where golfers compete, track their progress, and rise through the ranks. Join the league, declare your rounds, and climb the leaderboard.</p>
+            </div>
+            <button class="btn btn-primary" onclick="navigateTo('login-page')">Login / Join</button>
+        </div>
+    </div>
+
+    <!-- ========== LOGIN / SIGN UP PAGE ========== -->
+    <div id="login-page" class="page hidden">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h2>PSK Golf League</h2>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" class="auth-form">
+                <h3>Login</h3>
+                <div class="form-group">
+                    <label for="login-username">Username</label>
+                    <input type="text" id="login-username" placeholder="Enter your username" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="login-password" placeholder="Enter your password" required>
+                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('login-password')">Show</button>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Login</button>
+            </form>
+
+            <!-- Signup Form (Hidden by default) -->
+            <form id="signup-form" class="auth-form hidden">
+                <h3>Create Account</h3>
+                <div class="form-group">
+                    <label for="signup-username">Username</label>
+                    <input type="text" id="signup-username" placeholder="Choose a username" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Password</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="signup-password" placeholder="Create a password" required>
+                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('signup-password')">Show</button>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+            </form>
+
+            <!-- Toggle Form -->
+            <div class="auth-toggle">
+                <p id="toggle-text">Don't have an account? <a href="#" onclick="toggleAuthForm(); return false;">Sign up</a></p>
+            </div>
+
+            <!-- Back Button -->
+            <button class="btn btn-secondary btn-block" onclick="navigateTo('landing-page')">Back</button>
+        </div>
+    </div>
+
+    <!-- ========== DASHBOARD ========== -->
+    <div id="dashboard-page" class="page hidden">
+        <nav class="navbar">
+            <div class="navbar-brand">PSK Golf League</div>
+            <div class="navbar-menu">
+                <span id="user-display" class="user-name"></span>
+                <button class="btn btn-secondary" onclick="logout()">Logout</button>
+            </div>
+        </nav>
+
+        <div class="dashboard-container">
+            <!-- Week Status Card -->
+            <div class="card status-card">
+                <h2>Current Week Status</h2>
+                <div id="week-status" class="status-content">
+                    <p><strong>Week:</strong> <span id="current-week">1</span></p>
+                    <p><strong>Status:</strong> <span id="week-state" class="status-badge">Not Started</span></p>
+                    <p id="declare-deadline" class="small-text"></p>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="card actions-card">
+                <h3>Actions</h3>
+                <div class="button-grid">
+                    <button id="declare-round-btn" class="btn btn-primary" onclick="openDeclareRound()">Declare Round</button>
+                    <button id="enter-score-btn" class="btn btn-primary" onclick="openScoreEntry()" disabled>Enter Score</button>
+                    <button class="btn btn-primary" onclick="navigateTo('leaderboard-page')">View Leaderboard</button>
+                </div>
+            </div>
+
+            <!-- Player Status Card -->
+            <div class="card player-status-card">
+                <h3>Your Status</h3>
+                <div id="player-status" class="status-content">
+                    <p><strong>Round Declared:</strong> <span id="round-declared">No</span></p>
+                    <p><strong>Declared Time:</strong> <span id="declare-time">—</span></p>
+                    <p><strong>Score Entered:</strong> <span id="score-entered">No</span></p>
+                    <p><strong>Score Submitted Time:</strong> <span id="submit-time">—</span></p>
+                    <p><strong>Score:</strong> <span id="current-score">—</span></p>
+                </div>
+            </div>
+
+            <!-- Admin Controls (Visible only to admin) -->
+            <div id="admin-controls" class="card admin-card hidden">
+                <h3>Admin Controls</h3>
+                <div class="button-grid">
+                    <button class="btn btn-warning" onclick="startWeek()">Start Week</button>
+                    <button class="btn btn-warning" onclick="endWeek()">End Week</button>
+                </div>
+                <div id="admin-status" class="status-content">
+                    <p><strong>Admin:</strong> Yes</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== DECLARE ROUND MODAL ========== -->
+    <div id="declare-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Declare Round</h2>
+                <button class="modal-close" onclick="closeDeclareRound()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>You are about to declare a round for this week.</p>
+                <p class="warning-text">⚠️ You can only declare <strong>once per week</strong>.</p>
+                <p id="declare-info" class="small-text"></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeDeclareRound()">Cancel</button>
+                <button class="btn btn-primary" onclick="confirmDeclareRound()">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== SCORE ENTRY PAGE ========== -->
+    <div id="score-entry-page" class="page hidden">
+        <nav class="navbar">
+            <div class="navbar-brand">PSK Golf League</div>
+            <div class="navbar-menu">
+                <span id="user-display-score" class="user-name"></span>
+                <button class="btn btn-secondary" onclick="navigateTo('dashboard-page')">Back to Dashboard</button>
+            </div>
+        </nav>
+
+        <div class="score-container">
+            <div class="card">
+                <h2>Enter Your Score</h2>
+                <p class="subtitle-text">Enter your score for each hole (1-9)</p>
+
+                <form id="score-form" class="score-form">
+                    <div class="holes-grid">
+                        <!-- Holes 1-9 -->
+                        <div class="hole-input">
+                            <label for="hole-1">Hole 1</label>
+                            <input type="number" id="hole-1" min="1" max="12" placeholder="—" required>
+                        </div>
+                        <div class="hole-input">
+                            <label for="hole-2">Hole 2</label>
+                            <input type="number" id="hole-2" min="1" max="12" placeholder="—" required>
+                        </div>
+                        <div class="hole-input">
+                            <label for="hole-3">Hole 3</label>
+                            <input type="number" id="hole-3" min="1" max="12" placeholder="—" required>
+                        </div>
+                        <div class="hole-input">
+                            <label for="hole-4">Hole 4</label>
+                            <input type="number" id="hole-4" min="1" max="12" placeholder="—" required>
+                        </div>
+                        <div class="hole-input">
+                            <label for="hole-5">Hole 5</label>
+                            <input type="number" id="hole-5" min="1" max="12" placeholder="—" required>
+                        </div>
+                        <div class="hole-input">
+                            <label for="hole-6">Hole 6</label>
+                            <input type="number" id="hole-6" min="1" max="12" placeholder="—" required>
+                        </div>
+                        <div class="hole-input">
+                            <label for="hole-7">Hole 7</label>
+                            <input type="number" id="hole-7" min="1" max="12" placeholder="—" required>
+                        </div>
+                        <div class="hole-input">
+                            <label for="hole-8">Hole 8</label>
+                            <input type="number" id="hole-8" min="1" max="12" placeholder="—" required>
+                        </div>
+                        <div class="hole-input">
+                            <label for="hole-9">Hole 9</label>
+                            <input type="number" id="hole-9" min="1" max="12" placeholder="—" required>
+                        </div>
+                    </div>
+
+                    <!-- Total Score Display -->
+                    <div class="total-score">
+                        <p>Total Score: <strong id="total-display">0</strong></p>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="button-group">
+                        <button type="button" class="btn btn-secondary" onclick="navigateTo('dashboard-page')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Submit Score</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== SCORE CONFIRMATION MODAL ========== -->
+    <div id="score-confirm-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Confirm Your Score</h2>
+                <button class="modal-close" onclick="closeScoreConfirm()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Your Total Score:</strong> <span id="confirm-score">0</span></p>
+                <p class="warning-text">⚠️ This score will be <strong>locked</strong> after submission and cannot be changed.</p>
+                <div id="score-breakdown" class="score-breakdown"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeScoreConfirm()">Edit</button>
+                <button class="btn btn-primary" onclick="submitScore()">Confirm & Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== LEADERBOARD PAGE ========== -->
+    <div id="leaderboard-page" class="page hidden">
+        <nav class="navbar">
+            <div class="navbar-brand">PSK Golf League</div>
+            <div class="navbar-menu">
+                <span id="user-display-lb" class="user-name"></span>
+                <button class="btn btn-secondary" onclick="navigateTo('dashboard-page')">Back to Dashboard</button>
+            </div>
+        </nav>
+
+        <div class="leaderboard-container">
+            <div class="card">
+                <h2>Leaderboard - Week <span id="lb-week">1</span></h2>
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Player</th>
+                            <th>Score</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
