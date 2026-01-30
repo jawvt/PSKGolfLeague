@@ -9,12 +9,12 @@ const appState = {
     scores: {},
 };
 
-// Mock user database (with email-based authentication)
+// Mock user database
 const mockUsers = {
-    'john@example.com': { username: 'john', password: 'password123', isAdmin: false },
-    'admin@pskgolfleague.com': { username: 'admin', password: 'admin123', isAdmin: true },
-    'jane@example.com': { username: 'jane', password: 'golf456', isAdmin: false },
-    'bob@example.com': { username: 'bob', password: 'birdie789', isAdmin: false },
+    'john': { password: 'password123', isAdmin: false },
+    'admin': { password: 'admin123', isAdmin: true },
+    'jane': { password: 'golf456', isAdmin: false },
+    'bob': { password: 'birdie789', isAdmin: false },
 };
 
 // Mock data - player scores and round declarations
@@ -110,19 +110,18 @@ function navigateTo(pageId) {
 function handleLogin(e) {
     e.preventDefault();
 
-    const email = document.getElementById('login-email').value.trim();
+    const username = document.getElementById('login-username').value.trim();
     const password = document.getElementById('login-password').value;
 
     // Validate credentials
-    if (!mockUsers[email] || mockUsers[email].password !== password) {
-        alert('Invalid email or password.\n\nTest Accounts:\nUser: john@example.com | Pass: password123\nUser: jane@example.com | Pass: golf456\nUser: bob@example.com | Pass: birdie789\n\nAdmin: admin@pskgolfleague.com | Pass: admin123');
+    if (!mockUsers[username] || mockUsers[username].password !== password) {
+        alert('Invalid username or password.\n\nTest Accounts:\nUser: john | Pass: password123\nUser: jane | Pass: golf456\nUser: bob | Pass: birdie789\n\nAdmin: admin | Pass: admin123');
         return;
     }
 
     // Login successful
-    const username = mockUsers[email].username;
     appState.currentUser = username;
-    appState.isAdmin = mockUsers[email].isAdmin;
+    appState.isAdmin = mockUsers[username].isAdmin;
 
     // Initialize player data if not exists
     if (!playerData[username]) {
@@ -148,16 +147,10 @@ function handleLogin(e) {
 function handleSignup(e) {
     e.preventDefault();
 
-    const email = document.getElementById('signup-email').value.trim();
     const username = document.getElementById('signup-username').value.trim();
     const password = document.getElementById('signup-password').value;
 
     // Validate input
-    if (!email.includes('@')) {
-        alert('Please enter a valid email address.');
-        return;
-    }
-
     if (username.length < 3) {
         alert('Username must be at least 3 characters.');
         return;
@@ -168,13 +161,13 @@ function handleSignup(e) {
         return;
     }
 
-    if (mockUsers[email]) {
-        alert('Email already registered. Please login or use another email.');
+    if (mockUsers[username]) {
+        alert('Username already exists. Try another.');
         return;
     }
 
     // Create new account
-    mockUsers[email] = { username, password, isAdmin: false };
+    mockUsers[username] = { password, isAdmin: false };
     playerData[username] = {
         roundDeclared: false,
         declareTime: null,
